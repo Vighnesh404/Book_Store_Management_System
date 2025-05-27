@@ -124,8 +124,7 @@ public class UserServiceImplement implements IUserService{
 	public void deleteUserByIdPermenent(long userId) {
 		
 		User user = userRepository.findById(userId).orElseThrow(
-				() -> new ResourceNotFoundException("User", "Id", userId)
-				);
+				() -> new ResourceNotFoundException("User", "Id", userId));
 		
 		userRepository.delete(user);
 	}
