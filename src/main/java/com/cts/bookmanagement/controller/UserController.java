@@ -20,7 +20,8 @@ import com.cts.bookmanagement.service.IUserService;
 
 import jakarta.validation.Valid;
 
-@Validated
+
+//@Validated
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -30,7 +31,7 @@ public class UserController {
 	
 
 	@PostMapping("/adduser")
-	public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserDto userDto){
+	public ResponseEntity<UserDto> addUser(@RequestBody UserDto userDto){
 		return new ResponseEntity<UserDto>(userService.addUser(userDto), HttpStatus.OK);
 	}
 	
@@ -46,7 +47,7 @@ public class UserController {
 	}
 	
 	@PutMapping("/updateuser/{userId}")
-	public ResponseEntity<UserDto> updateUserById(@PathVariable Long userId, @RequestBody UserDto user)
+	public ResponseEntity<UserDto> updateUserById(@Valid @PathVariable Long userId, @RequestBody UserDto user)
 	{
 		return new ResponseEntity<UserDto>(userService.updateUserById(userId, user), HttpStatus.OK);
 	}
@@ -55,6 +56,12 @@ public class UserController {
 	public ResponseEntity<String> deleteUserById(@PathVariable Long userId){
 		  userService.deleteUserById(userId);
 		  return new ResponseEntity<String>("deleted successfully", HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/deleteusertotally/{userId}")
+	public ResponseEntity<String> deleteUserByIdPermenent(@PathVariable Long userId){
+		userService.deleteUserById(userId);
+		return new ResponseEntity<String>("deleted successfully fro the database", HttpStatus.OK);
 	}
 	
 

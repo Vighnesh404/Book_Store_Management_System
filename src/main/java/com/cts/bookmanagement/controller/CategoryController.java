@@ -69,5 +69,6 @@ public class CategoryController {
 	        categoryService.deleteCategoryById(catId);
 	        return new ResponseEntity<>("Category has been successfully deleted", HttpStatus.OK);
 	    }
-
+	    
+	    
 }

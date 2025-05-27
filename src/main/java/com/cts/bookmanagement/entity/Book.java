@@ -30,12 +30,10 @@ public class Book {
 	
 	@ManyToOne
 	@JoinColumn(name = "author_id")
-	@NotBlank
 	private Author author;
 	
 	@ManyToOne
 	@JoinColumn(name = "category_id")
-	@NotBlank
 	private Category category;
 	
 	@NotNull

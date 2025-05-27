@@ -29,10 +29,10 @@ public class UserServiceImplement implements IUserService{
 	@Override
 	public UserDto addUser(UserDto userDto) {
 		
-		Optional<User> optionalUser = userRepository.findByEmail(userDto.getEmail());
-		if(optionalUser.isPresent()) {
-			throw new EmailAlreadyExistsException("Email Already Exists");
-		}
+//		Optional<User> optionalUser = userRepository.findByEmail(userDto.getEmail());
+//		if(optionalUser.isPresent()) {
+//			throw new EmailAlreadyExistsException("Email Already Exists");
+//		}
 		
 		Optional<User> optionalUserName = userRepository.findByName(userDto.getName());
 		if(optionalUserName.isPresent()) {
@@ -55,8 +55,8 @@ public class UserServiceImplement implements IUserService{
 		newUser.setDeleted(false);
 		
 		User saveUser = userRepository.save(newUser);
-		
 		return modelMapper.map(saveUser, UserDto.class);
+//		return userDto;
 	}
 	
 	
@@ -173,10 +173,20 @@ public class UserServiceImplement implements IUserService{
 		User user = userRepository.findById(userId).orElseThrow(
 				() -> new ResourceNotFoundException("User", "Id", userId)
 				);
-		
-		user.setDeleted(true);
+	
 		
 		userRepository.save(user);
+	}
+	
+	
+	@Override
+	public void deleteUserByIdPermenent(long userId) {
+		
+		User user = userRepository.findById(userId).orElseThrow(
+				() -> new ResourceNotFoundException("User", "Id", userId)
+				);
+		
+		userRepository.delete(user);
 	}
 
 	

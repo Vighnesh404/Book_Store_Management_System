@@ -17,6 +17,7 @@ public interface IUserService {
 	UserDto getUserById(Long userId);
 	UserDto updateUserById(Long userId, UserDto userDto);
 	void deleteUserById(long userId);
+	void deleteUserByIdPermenent(long userId);
 	
 
 }
