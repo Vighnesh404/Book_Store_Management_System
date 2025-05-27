@@ -67,7 +67,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 				LocalDateTime.now(),
 				exception.getMessage(),
 				webRequest.getDescription(false),
-				"Password_Error"
+				"PASSWORD_ERROR"
 				);
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
@@ -81,7 +81,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 				LocalDateTime.now(),
 				exception.getClass().getName(),
 				webRequest.getDescription(false),
-				"INTERNAL SERVER ERROR"
+				"INTERNAL_SERVER_ERROR"
 				);
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
