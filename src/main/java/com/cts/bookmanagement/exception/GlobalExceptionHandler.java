@@ -1,9 +1,11 @@
 package com.cts.bookmanagement.exception;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -29,18 +31,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 		return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
 	}
 	
-	@ExceptionHandler(EmailAlreadyExistsException.class)
-	public ResponseEntity<ErrorDetails> emailAlreadyExistsException(EmailAlreadyExistsException exception, WebRequest webRequest){
-		
-		ErrorDetails errorDetails = new ErrorDetails(
-				LocalDateTime.now(),
-				exception.getMessage(),
-				webRequest.getDescription(false),
-				"EMAIL_ALREADY_EXISTS"
-				);
-		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
-	}
-	
 	
 	@ExceptionHandler(UserNameAlreadyExistsException.class)
 	public ResponseEntity<ErrorDetails> userAlreadyExistsException(UserNameAlreadyExistsException exception, WebRequest webRequest){
@@ -55,18 +45,49 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 	}
 	
 	
+	@ExceptionHandler(EmailAlreadyExistsException.class)
+	public ResponseEntity<ErrorDetails> emailAlreadyExistsException(EmailAlreadyExistsException exception, WebRequest webRequest){
+		
+		ErrorDetails errorDetails = new ErrorDetails(
+				LocalDateTime.now(),
+				exception.getMessage(),
+				webRequest.getDescription(false),
+				"EMAIL_ALREADY_EXISTS"
+				);
+		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+	}
+	
+	
+	
+	
+	@ExceptionHandler(PasswordMustNotBeEmpty.class)
+	public ResponseEntity<ErrorDetails> PasswordMustNotBeEmpty(PasswordMustNotBeEmpty exception, WebRequest webRequest){
+		
+		ErrorDetails errorDetails = new ErrorDetails(
+				LocalDateTime.now(),
+				exception.getMessage(),
+				webRequest.getDescription(false),
+				"Password_Error"
+				);
+		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+	}
+	
+	
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorDetails> Exception(Exception exception, WebRequest webRequest){
 		
 		ErrorDetails errorDetails = new ErrorDetails(
 				LocalDateTime.now(),
-				exception.getMessage(),
+				exception.getClass().getName(),
 				webRequest.getDescription(false),
 				"INTERNAL SERVER ERROR"
 				);
-		return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
+	
+	
+//	----------Exception for the service--------------
 	
 	 @ExceptionHandler(ConstraintViolationException.class)
 	    public ResponseEntity<Object> handleConstraintViolationException(
@@ -88,7 +109,29 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 	        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
 	    }
 	
-	
+	 
+	 @ExceptionHandler(DataIntegrityViolationException.class)
+	    public ResponseEntity<Object> handleDataIntegrityViolationException(
+	            DataIntegrityViolationException ex, WebRequest request) {
+
+	        Map<String, String> errors = new HashMap<>();
+	        String errorMessage = "A conflict occurred with existing data. Please check your input.";
+
+	        if (ex.getRootCause() != null && ex.getRootCause().getMessage() != null &&
+	            ex.getRootCause().getMessage().toLowerCase().contains("duplicate entry")) {
+	            errorMessage = "This record already exists. Please provide unique information.";
+	        }
+
+	        errors.put("message", errorMessage); // Using "message" or "error" as the key
+
+	        return new ResponseEntity<>(errors, HttpStatus.CONFLICT);
+	    }
+	 
+	 
+	 
+//	------------Exception for the Controller------------
+	 
+	 
 //	@Override
 //	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 //			HttpHeaders headers, HttpStatusCode status, WebRequest request) {

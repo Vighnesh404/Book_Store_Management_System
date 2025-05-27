@@ -24,29 +24,17 @@ public class UserServiceImplement implements IUserService{
 	@Autowired
 	ModelMapper modelMapper;
 	
-	
-	
 	@Override
 	public UserDto addUser(UserDto userDto) {
 		
-//		Optional<User> optionalUser = userRepository.findByEmail(userDto.getEmail());
-//		if(optionalUser.isPresent()) {
-//			throw new EmailAlreadyExistsException("Email Already Exists");
-//		}
-		
-		Optional<User> optionalUserName = userRepository.findByName(userDto.getName());
-		if(optionalUserName.isPresent()) {
-			throw new EmailAlreadyExistsException("User Name Already Exists");
+		Optional<User> optionalUser = userRepository.findByEmail(userDto.getEmail());
+		if(optionalUser.isPresent()) {
+			throw new EmailAlreadyExistsException("Email Already Exists");
 		}
 		
 		User newUser = modelMapper.map(userDto , User.class);
 		
 		String password = userDto.getPassword();
-	    if (!isValidPassword(password)) {
-	        throw new IllegalArgumentException("Password must be at least 8 characters "
-	        		+ "long and include at least one alphabet, "
-	        		+ "one number, and one special character.");
-	    }
 	    newUser.setPassword(password);
 	    
 		newUser.setRole("user");
@@ -56,7 +44,6 @@ public class UserServiceImplement implements IUserService{
 		
 		User saveUser = userRepository.save(newUser);
 		return modelMapper.map(saveUser, UserDto.class);
-//		return userDto;
 	}
 	
 	
@@ -99,39 +86,6 @@ public class UserServiceImplement implements IUserService{
 			return modelMapper.map(optionalUser, UserDto.class);
 		// Returns null if user doesn't exist or is deleted
 	}
-
-
-//	@Override
-//	public UserDto updateUserById(Long userId, UserDto userDto) {
-//		
-//		User updateUser = userRepository.findById(userId).get();
-//		
-//		updateUser.setName(userDto.getName());
-//		updateUser.setEmail(userDto.getEmail());
-//		
-//		
-//		 String password = userDto.getPassword();
-//		    if (!isValidPassword(password)) {
-//		        throw new IllegalArgumentException("Password must be at least 8 characters long and include at least one alphabet, one number, and one special character.");
-//		    }
-//		 updateUser.setPassword(password);
-//		 
-////		updateUser.setRole(user.getRole());
-//		 
-////		  String role = userDto.getRole();
-////		    if (!isValidRole(role)) {
-////		        throw new IllegalArgumentException("Role must be either 'user' or 'admin'.");
-////		    }
-////		    updateUser.setRole(role);
-//		    
-//		    updateUser.setUpdatedDate(LocalDateTime.now());
-//		    
-//		
-//		User saveUser = userRepository.save(updateUser);
-//		
-//		return modelMapper.map(saveUser, UserDto.class);
-//	}
-	
 	
 	@Override
 	public UserDto updateUserById(Long userId, UserDto userDto) {
@@ -145,19 +99,7 @@ public class UserServiceImplement implements IUserService{
 		
 		
 		String password = userDto.getPassword();
-		if (!isValidPassword(password)) {
-			throw new IllegalArgumentException("Password must be at least 8 characters long and include at least one alphabet, one number, and one special character.");
-		}
 		updateUser.setPassword(password);
-		
-//		updateUser.setRole(user.getRole());
-		
-//		  String role = userDto.getRole();
-//		    if (!isValidRole(role)) {
-//		        throw new IllegalArgumentException("Role must be either 'user' or 'admin'.");
-//		    }
-//		    updateUser.setRole(role);
-		
 		updateUser.setUpdatedDate(LocalDateTime.now());
 		
 		
@@ -174,7 +116,6 @@ public class UserServiceImplement implements IUserService{
 				() -> new ResourceNotFoundException("User", "Id", userId)
 				);
 	
-		
 		userRepository.save(user);
 	}
 	
@@ -188,38 +129,6 @@ public class UserServiceImplement implements IUserService{
 		
 		userRepository.delete(user);
 	}
-
-	
-	
-//Password Validation for having atleast 1 alphabet,, 1 number and 1 special Character 
-
-	private boolean isValidPassword(String password) {
-	    if (password == null || password.length() < 8) {
-	        return false;
-	    }
-	    boolean hasAlphabet = false;
-	    boolean hasNumber = false;
-	    boolean hasSpecialChar = false;
-	    String specialChars = "!@#$%^&*()-+_=~`[]\\{}|;':\",./<>?";
-
-	    for (char ch : password.toCharArray()) {
-	        if (Character.isLetter(ch)) {
-	            hasAlphabet = true;
-	        } else if (Character.isDigit(ch)) {
-	            hasNumber = true;
-	        } else if (specialChars.contains(String.valueOf(ch))) {
-	            hasSpecialChar = true;
-	        }
-	    }
-	    return hasAlphabet && hasNumber && hasSpecialChar;
-	}
-	
-	
-//-------------Role Validation------------+
-	
-//	private boolean isValidRole(String role) {
-//	    return "user".equalsIgnoreCase(role) || "admin".equalsIgnoreCase(role);
-//	}
 
 
 }

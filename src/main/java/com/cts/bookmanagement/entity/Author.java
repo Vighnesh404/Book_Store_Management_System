@@ -20,7 +20,7 @@ public class Author {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long authId;
 	
-	@NotBlank
+	@NotEmpty
 	private String authName;
 	
 	@OneToMany(mappedBy = "author", cascade = CascadeType.ALL)

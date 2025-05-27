@@ -18,6 +18,8 @@ public class Category {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long catId;
+
+	@NotBlank
 	private String catName;
 	
 	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL)

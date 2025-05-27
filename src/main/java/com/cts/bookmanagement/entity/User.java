@@ -3,14 +3,18 @@ package com.cts.bookmanagement.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.validator.constraints.Length;
+
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
@@ -21,14 +25,17 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long userId;
 	
-	@NotEmpty
+	@NotBlank
+	@Column(unique = true)
 	private String name;
 	
-	@NotEmpty
+	@NotBlank
 	@Email
+	@Column(unique = true)
 	private String email;
 	
-	@NotEmpty
+	@Pattern(message =" must have atleast 8 char", 
+			regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?`~])(?=.*[^\\s]).{8,}$")
 	private String password;
 	
 	private String role;
